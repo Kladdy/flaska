@@ -1,6 +1,7 @@
 // pages/index.js
 'use client';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { redirect } from 'next/navigation';
 
 export default function Index() {
   const { user, error, isLoading } = useUser();
@@ -18,5 +19,5 @@ export default function Index() {
     );
   }
 
-  return <a href="/api/auth/login">Login</a>;
+  redirect('/api/auth/login');
 }
