@@ -1,3 +1,8 @@
+# flaska
+
+"En app som man lägger in champagne eller vinflaskor, antal, var de finns, bild, referenslänk till vision, lagringspotential, pris. Eg en excelfil men med Bells and whistles." - Beställaren
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
