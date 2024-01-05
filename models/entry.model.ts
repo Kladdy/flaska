@@ -19,6 +19,11 @@ const EntrySchema: Schema = new Schema<IEntry>({
     required: true,
     unique: false,
   },
+  userId: {
+    type: String,
+    required: true,
+    unique:true,
+  },
   description: {
     type: String,
   },
@@ -44,6 +49,12 @@ const EntrySchema: Schema = new Schema<IEntry>({
     type: [String],
     default: [],
   },
+  imageSmall: {
+    type: Buffer,
+  },
+  imageLarge: {
+    type: Buffer,
+  }
 });
 
 const EntryModel = models.Entry || model<IEntry>('Entry', EntrySchema);
