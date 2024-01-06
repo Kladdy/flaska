@@ -1,15 +1,125 @@
+import { IEntry } from "@/models/entry.model";
 import { Dialog, Transition } from "@headlessui/react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 
 interface Props {
   show: boolean;
   showModalAction: Function;
-  userId: String | null | undefined;
+  handleSavedEntry: Function,
+  userId: string | null | undefined;
 }
 
 function EntryModal(props: Props) {
   const cancelButtonRef = useRef(null);
+  const [uploadedImageName, setUploadedImageName] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+  const [location, setLocation] = useState<string>("");
+  const [origin, setOrigin] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [storage, setStorage] = useState<string>("");
+  const [link1, setLink1] = useState<string>("");
+  const [link2, setLink2] = useState<string>("");
+  const [imageSmall, setImageSmall] = useState<string>("");
+  const [imageLarge, setImageLarge] = useState<string>("");
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target.value);
+  };
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(event.target.value);
+  };
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(event.target.valueAsNumber);
+  };
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+  const handleOriginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOrigin(event.target.value);
+  };
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPrice(event.target.valueAsNumber);
+  };
+  const handleStorageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStorage(event.target.value);
+  };
+  const handleLink1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLink1(event.target.value);
+  };
+  const handleLink2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLink2(event.target.value);
+  };
+
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile: File | undefined = event.target.files?.[0];
+    if (uploadedFile) {
+      setUploadedImageName(uploadedFile.name);
+      //Convert image to base64 string
+      const reader: FileReader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setImageSmall(base64String);
+        setImageLarge(""); //TODO: add large image as well
+      };
+      reader.readAsDataURL(uploadedFile);
+    }
+  };
+
+  const handleSaveEntry = async () => {
+    handleCloseModal();
+
+    //Extract userid from string
+    let userId: string;
+    if (props.userId) {
+      userId = props.userId.split("|")[1];
+
+      const data: IEntry = {
+        name: name,
+        userId: userId,
+        description: description,
+        category: category,
+        amount: amount,
+        location: location,
+        origin: origin,
+        price: price,
+        storage: storage,
+        links: [link1, link2],
+        imageSmall: imageSmall,
+        imageLarge: imageLarge,
+      };
+
+      console.log(data)
+      //Send data to server
+      const settings = {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+      const response = await fetch("/api/entry", settings);
+
+      if (response.status === 200) {
+        console.log("success");
+        props.handleSavedEntry();
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    props.showModalAction();
+    setUploadedImageName("");
+    setImageSmall("");
+    setImageLarge("");
+  };
 
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -62,6 +172,7 @@ function EntryModal(props: Props) {
                             id="name"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Chardonnay.."
+                            onChange={handleNameChange}
                           />
                         </div>
 
@@ -75,6 +186,7 @@ function EntryModal(props: Props) {
                             id="description"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             defaultValue={""}
+                            onChange={handleDescriptionChange}
                           />
                         </div>
 
@@ -88,11 +200,12 @@ function EntryModal(props: Props) {
                             id="category"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Bubbel, Vin.."
+                            onChange={handleCategoryChange}
                           />
                         </div>
 
                         <label htmlFor="amount" className="block text-sm font-medium leading-6 text-gray-900">
-                          Pris
+                          Antal
                         </label>
                         <div className="mt-2">
                           <input
@@ -101,6 +214,7 @@ function EntryModal(props: Props) {
                             id="amount"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="4"
+                            onChange={handleAmountChange}
                           />
                         </div>
 
@@ -114,6 +228,7 @@ function EntryModal(props: Props) {
                             id="location"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Vinkyl 3, hylla 2.."
+                            onChange={handleLocationChange}
                           />
                         </div>
 
@@ -127,6 +242,7 @@ function EntryModal(props: Props) {
                             id="origin"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Spanien.."
+                            onChange={handleOriginChange}
                           />
                         </div>
 
@@ -135,11 +251,12 @@ function EntryModal(props: Props) {
                         </label>
                         <div className="mt-2">
                           <input
-                            type="text"
+                            type="number"
                             name="price"
                             id="price"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="349"
+                            onChange={handlePriceChange}
                           />
                         </div>
 
@@ -153,6 +270,7 @@ function EntryModal(props: Props) {
                             id="storage"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Stående, liggande.."
+                            onChange={handleStorageChange}
                           />
                         </div>
 
@@ -166,6 +284,7 @@ function EntryModal(props: Props) {
                             id="link1"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Systembolaget.."
+                            onChange={handleLink1Change}
                           />
                         </div>
 
@@ -179,6 +298,7 @@ function EntryModal(props: Props) {
                             id="link2"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Sida.."
+                            onChange={handleLink2Change}
                           />
                         </div>
 
@@ -194,11 +314,20 @@ function EntryModal(props: Props) {
                                 className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                               >
                                 <span>Ladda upp bild</span>
-                                <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                <input
+                                  id="file-upload"
+                                  name="file-upload"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={(e) => handleImageUpload(e)}
+                                />
                               </label>
                               <p className="pl-1">eller drag och släpp här</p>
                             </div>
                             <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                            <p className="text-xs leading-5 text-green-600" id="uploadedImageName">
+                              {uploadedImageName}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -208,14 +337,14 @@ function EntryModal(props: Props) {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                      onClick={() => props.showModalAction()}
+                      onClick={() => handleSaveEntry()}
                     >
                       Spara
                     </button>
                     <button
                       type="button"
                       className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                      onClick={() => props.showModalAction()}
+                      onClick={() => handleCloseModal()}
                       ref={cancelButtonRef}
                     >
                       Avbryt

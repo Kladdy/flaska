@@ -3,7 +3,7 @@ import { models, model, Schema, Document } from 'mongoose';
 export interface IEntry {
   _id?: Schema.Types.ObjectId
   name: string,
-  userId: String, 
+  userId: string, 
   description: string,
   category: string,
   amount: number,
@@ -11,9 +11,9 @@ export interface IEntry {
   origin: string,
   price: number,
   storage: string,
-  links: [string],
-  imageSmall: Buffer,
-  imageLarge: Buffer,
+  links: string[],
+  imageSmall: string,
+  imageLarge: string,
 };
 
 const EntrySchema: Schema = new Schema<IEntry>({
@@ -53,10 +53,10 @@ const EntrySchema: Schema = new Schema<IEntry>({
     default: [],
   },
   imageSmall: {
-    type: Buffer,
+    type: String,
   },
   imageLarge: {
-    type: Buffer,
+    type: String,
   }
 });
 

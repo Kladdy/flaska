@@ -14,18 +14,23 @@ interface Props {
 const IndexComponent = (props: Props) => {
   const [entrys, setEntrys] = useState<IEntry[]>([]);
   const [showEntryModal, setShowEntryModal] = useState(false);
+  
   const showModalHandler = () => {
     setShowEntryModal(!showEntryModal);
   }
+  const handleSavedEntry = () => {
+    fetchData();
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("/api/entrys");
-      const data: IEntry[] = await res.json();
-      setEntrys(data);
-    };
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    const res = await fetch("/api/entrys");
+    const data: IEntry[] = await res.json();
+    setEntrys(data);
+  };
 
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -42,7 +47,7 @@ const IndexComponent = (props: Props) => {
         >
           Lägg till flaska
         </button>
-        <EntryModal show={showEntryModal} showModalAction={showModalHandler} userId={props.user.sub} />
+        <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} userId={props.user.sub} />
       </div>
 
       <EntryGridList entrys={entrys} />
