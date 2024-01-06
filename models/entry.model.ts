@@ -1,6 +1,18 @@
-import { models, model, Schema } from 'mongoose';
+import { models, model, Schema, Document } from 'mongoose';
 
-const EntrySchema: Schema = new Schema({
+export interface IEntry {
+  _id?: Schema.Types.ObjectId
+  name: string,
+  description: string,
+  category: string,
+  amount: number,
+  location: string,
+  price: number,
+  storage: string,
+  links: [string],
+};
+
+const EntrySchema: Schema = new Schema<IEntry>({
   name: {
     type: String,
     required: true,
@@ -30,6 +42,8 @@ const EntrySchema: Schema = new Schema({
   },
 });
 
-const EntryModel = models.Entry || model('Entry', EntrySchema);
+const EntryModel = models.Entry || model<IEntry>('Entry', EntrySchema);
 
 export default EntryModel;
+
+export type EntryDocument = Document & typeof EntryModel;
