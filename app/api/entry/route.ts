@@ -1,5 +1,5 @@
 import { connectMongo } from '@/utils/mongodb';
-import EntryModel from '@/models/entry.model';
+import EntryModel, { IEntry } from '@/models/entry.model';
 import { NextRequest } from "next/server";
 import mongoose from 'mongoose';
 
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("id");
   try {
     connectMongo();
-    const entry = await EntryModel.findById(id);
+    const entry : IEntry | null = await EntryModel.findById(id);
     return Response.json(entry);
   } catch (error) {
     console.error(error);
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     connectMongo();
-    const updatedEntry = await EntryModel.findOneAndUpdate({ _id: id }, data, { new: true, upsert: true });
+    const updatedEntry : IEntry = await EntryModel.findOneAndUpdate({ _id: id }, data, { new: true, upsert: true });
     return Response.json(updatedEntry);
   } catch (error) {
     console.error(error);
