@@ -11,50 +11,40 @@ interface Props {
 }
 
 function EntryModal(props: Props) {
+  const systembolagetPrefix: string = "systembolaget|";
+  const vivinoPrefix: string = "vivino|"
   const cancelButtonRef = useRef(null);
-  const [uploadedImageName, setUploadedImageName] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
-  const [location, setLocation] = useState<string>("");
-  const [origin, setOrigin] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  const [storage, setStorage] = useState<string>("");
-  const [link1, setLink1] = useState<string>("");
-  const [link2, setLink2] = useState<string>("");
-  const [imageSmall, setImageSmall] = useState<string>("");
-  const [imageLarge, setImageLarge] = useState<string>("");
-
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(event.target.value);
-  };
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategory(event.target.value);
-  };
-  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.valueAsNumber);
-  };
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
-  };
-  const handleOriginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOrigin(event.target.value);
-  };
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(event.target.valueAsNumber);
-  };
-  const handleStorageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStorage(event.target.value);
-  };
+  const dataEntry:IEntry = {
+    name: "",
+    userId: "",
+    description: "",
+    category: "",
+    amount: 0,
+    location: "",
+    origin: "",
+    price: 0,
+    storage: "",
+    links: [],
+    imageSmall: "",
+    imageLarge: ""
+  }
+  const [entry, setEntry] = useState<IEntry>(dataEntry);
+  const [uploadedImageName, setUploadedImageName] = useState<String>("");  
+  
   const handleLink1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLink1(event.target.value);
+    const oldLinks:string[] = entry.links;
+
+    let newLinks: string[] = Array.from(oldLinks);
+    newLinks[0] = systembolagetPrefix + event.target.value;
+    setEntry({...entry, links:newLinks});
   };
+
   const handleLink2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLink2(event.target.value);
+    const oldLinks:string[] = entry.links;
+
+    let newLinks: string[] = Array.from(oldLinks);
+    newLinks[1] = vivinoPrefix + event.target.value;
+    setEntry({...entry, links:newLinks});
   };
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,60 +55,43 @@ function EntryModal(props: Props) {
       const reader: FileReader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        setImageSmall(base64String);
-        setImageLarge(""); //TODO: add large image as well
+        setEntry({...entry, imageSmall:base64String});
+        setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
       };
       reader.readAsDataURL(uploadedFile);
     }
   };
 
   const handleSaveEntry = async () => {
-    handleCloseModal();
-
     //Extract userid from string
-    let userId: string;
+    let strippedUserId: string;
     if (props.userId) {
-      userId = props.userId.split("|")[1];
+      strippedUserId = props.userId.split("|")[1];
+      entry.userId = strippedUserId;
+    }
+    sendNewEntryToServer();
+    handleCloseModal();
+  };
 
-      const data: IEntry = {
-        name: name,
-        userId: userId,
-        description: description,
-        category: category,
-        amount: amount,
-        location: location,
-        origin: origin,
-        price: price,
-        storage: storage,
-        links: [link1, link2],
-        imageSmall: imageSmall,
-        imageLarge: imageLarge,
-      };
-
-      console.log(data)
-      //Send data to server
+  const sendNewEntryToServer = async () => {
       const settings = {
         method: "PUT",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(entry),
       };
       const response = await fetch("/api/entry", settings);
 
       if (response.status === 200) {
-        console.log("success");
         props.handleSavedEntry();
       }
-    }
-  };
+  }
 
   const handleCloseModal = () => {
     props.showModalAction();
-    setUploadedImageName("");
-    setImageSmall("");
-    setImageLarge("");
+    setEntry(dataEntry)
   };
 
   return (
@@ -172,7 +145,7 @@ function EntryModal(props: Props) {
                             id="name"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Chardonnay.."
-                            onChange={handleNameChange}
+                            onChange={(e) => setEntry({...entry, name: e.target.value})}
                           />
                         </div>
 
@@ -186,7 +159,7 @@ function EntryModal(props: Props) {
                             id="description"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             defaultValue={""}
-                            onChange={handleDescriptionChange}
+                            onChange={(e) => setEntry({...entry, description: e.target.value})}
                           />
                         </div>
 
@@ -200,7 +173,7 @@ function EntryModal(props: Props) {
                             id="category"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Bubbel, Vin.."
-                            onChange={handleCategoryChange}
+                            onChange={(e) => setEntry({...entry, category: e.target.value})}
                           />
                         </div>
 
@@ -214,7 +187,7 @@ function EntryModal(props: Props) {
                             id="amount"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="4"
-                            onChange={handleAmountChange}
+                            onChange={(e) => setEntry({...entry, amount: e.target.valueAsNumber})}
                           />
                         </div>
 
@@ -228,7 +201,7 @@ function EntryModal(props: Props) {
                             id="location"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Vinkyl 3, hylla 2.."
-                            onChange={handleLocationChange}
+                            onChange={(e) => setEntry({...entry, location: e.target.value})}
                           />
                         </div>
 
@@ -242,7 +215,7 @@ function EntryModal(props: Props) {
                             id="origin"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Spanien.."
-                            onChange={handleOriginChange}
+                            onChange={(e) => setEntry({...entry, origin: e.target.value})}
                           />
                         </div>
 
@@ -256,7 +229,7 @@ function EntryModal(props: Props) {
                             id="price"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="349"
-                            onChange={handlePriceChange}
+                            onChange={(e) => setEntry({...entry, price: e.target.valueAsNumber})}
                           />
                         </div>
 
@@ -269,8 +242,8 @@ function EntryModal(props: Props) {
                             name="storage"
                             id="storage"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Stående, liggande.."
-                            onChange={handleStorageChange}
+                            placeholder="Varmt, kallt, mörkt etc.."
+                            onChange={(e) => setEntry({...entry, storage: e.target.value})}
                           />
                         </div>
 
