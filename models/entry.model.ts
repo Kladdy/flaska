@@ -22,7 +22,7 @@ const EntrySchema: Schema = new Schema<IEntry>({
   userId: {
     type: String,
     required: true,
-    unique:true,
+    unique: false,
   },
   description: {
     type: String,
