@@ -8,10 +8,10 @@ interface Props {
 
 const getEntrySubtitle = (entry: IEntry) => {
   const components : string[] = []
-  if (entry.amount) components.push(`${entry.amount} st`)
-  if (entry.location) components.push(`${entry.location}`)
-  if (entry.origin) components.push(`${entry.origin}`)
-  if (entry.price) components.push(`${formatCurrencySEK(entry.price)}`)
+  entry.amount ? components.push(`${entry.amount} st`) : components.push('Okänd mängd')
+  entry.location ? components.push(`${entry.location}`) : components.push('Okänd plats')
+  entry.price ? components.push(`${formatCurrencySEK(entry.price)}`) : components.push('Inget pris')
+  entry.origin ? components.push(`${entry.origin}`) : null
   return components.join(' | ')
 }
 
