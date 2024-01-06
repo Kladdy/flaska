@@ -40,7 +40,7 @@ const EntryGridList = (props: Props) => {
               </div>
               <p className="mt-1 truncate text-sm text-gray-500">{getEntrySubtitle(entry)}</p>
             </div>
-            <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="" />
+            <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={entry.imageSmall} alt="" />
           </div>
           <div>
             <div className="-mt-px flex divide-x divide-gray-200">
