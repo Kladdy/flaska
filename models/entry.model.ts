@@ -7,6 +7,7 @@ export interface IEntry {
   category: string,
   amount: number,
   location: string,
+  origin: string,
   price: number,
   storage: string,
   links: [string],
@@ -28,6 +29,9 @@ const EntrySchema: Schema = new Schema<IEntry>({
     type: Number,
   },
   location: {
+    type: String,
+  },
+  origin: {
     type: String,
   },
   price: {
