@@ -1,4 +1,3 @@
-// pages/index.js
 'use client';
 import IndexComponent from '@/components/IndexComponent';
 import { useUser } from '@auth0/nextjs-auth0/client';
