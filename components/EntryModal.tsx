@@ -112,29 +112,29 @@ function EntryModal(props: Props) {
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                   <div>
                     {/* ICON CAN GO HERE */}
-                    <div className="mt-3 text-center sm:mt-5">
+                    <div className="mt-3 text-left sm:mt-5">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
                         Ny flaska
                       </Dialog.Title>
                       <div className="mt-2">
-                        <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="name" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Namn
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="name"
                             id="name"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Chardonnay.."
+                            placeholder="Chardonnay ..."
                             onChange={(e) => setEntry({...entry, name: e.target.value})}
                           />
                         </div>
 
-                        <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="description" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Beskrivning
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <textarea
                             rows={3}
                             name="description"
@@ -145,122 +145,122 @@ function EntryModal(props: Props) {
                           />
                         </div>
 
-                        <label htmlFor="category" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="category" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Kategori
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="category"
                             id="category"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Bubbel, Vin.."
+                            placeholder="Champagne, Rött vin, ..."
                             onChange={(e) => setEntry({...entry, category: e.target.value})}
                           />
                         </div>
 
-                        <label htmlFor="amount" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="amount" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Antal
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="number"
                             name="amount"
                             id="amount"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="4"
+                            placeholder=""
                             onChange={(e) => setEntry({...entry, amount: e.target.valueAsNumber})}
                           />
                         </div>
 
-                        <label htmlFor="location" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="location" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Plats
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="location"
                             id="location"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Vinkyl 3, hylla 2.."
+                            placeholder="Vinkyl 3, Hylla 2, ..."
                             onChange={(e) => setEntry({...entry, location: e.target.value})}
                           />
                         </div>
 
-                        <label htmlFor="origin" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="origin" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Ursprung
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="origin"
                             id="origin"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Spanien.."
+                            placeholder="Frankrike, Sverige, ..."
                             onChange={(e) => setEntry({...entry, origin: e.target.value})}
                           />
                         </div>
 
-                        <label htmlFor="price" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="price" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Pris
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="number"
                             name="price"
                             id="price"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="349"
+                            placeholder=""
                             onChange={(e) => setEntry({...entry, price: e.target.valueAsNumber})}
                           />
                         </div>
 
-                        <label htmlFor="storage" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="storage" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Lagring
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="storage"
                             id="storage"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Varmt, kallt, mörkt etc.."
+                            placeholder="Varmt, mörkt, liggandes, ..."
                             onChange={(e) => setEntry({...entry, storage: e.target.value})}
                           />
                         </div>
 
-                        <label htmlFor="link1" className="block text-sm font-medium leading-6 text-gray-900">
-                          Länk1
+                        <label htmlFor="link1" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
+                          Länk till Systembolaget
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="link1"
                             id="link1"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Systembolaget.."
+                            placeholder="https://www.systembolaget.se/..."
                             onChange={handleLink1Change}
                           />
                         </div>
 
-                        <label htmlFor="link2" className="block text-sm font-medium leading-6 text-gray-900">
-                          Länk2
+                        <label htmlFor="link2" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
+                          Länk till Vivino
                         </label>
-                        <div className="mt-2">
+                        <div className="mb-2">
                           <input
                             type="text"
                             name="link2"
                             id="link2"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Sida.."
+                            placeholder="https://www.vivino.com/..."
                             onChange={handleLink2Change}
                           />
                         </div>
 
-                        <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
+                        <label htmlFor="cover-photo" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Cover photo
                         </label>
-                        <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                        <div className="mb-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                           <div className="text-center">
                             <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
                             <div className="mt-4 flex text-sm leading-6 text-gray-600">
@@ -279,7 +279,7 @@ function EntryModal(props: Props) {
                               </label>
                               <p className="pl-1">eller drag och släpp här</p>
                             </div>
-                            <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                            <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF upp till 10 MB</p>
                             <p className="text-xs leading-5 text-green-600" id="uploadedImageName">
                               {uploadedImageName}
                             </p>
