@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { defaultEntry } from "./EntryComponent";
+import { EntryCategorys } from "@/models/category";
 
 interface Props {
   show: boolean;
@@ -114,7 +115,7 @@ function EntryModal(props: Props) {
                     {/* ICON CAN GO HERE */}
                     <div className="mt-3 text-left sm:mt-5">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Ny flaska
+                        {entry._id ? "Redigera flaska" : "Lägg till flaska"}
                       </Dialog.Title>
                       <div className="mt-2">
                         <label htmlFor="name" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
@@ -145,18 +146,25 @@ function EntryModal(props: Props) {
                           />
                         </div>
 
-                        <label htmlFor="category" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
-                          Kategori
-                        </label>
-                        <div className="mb-2">
-                          <input
-                            type="text"
-                            name="category"
+                        <div>
+                          <label htmlFor="category" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
+                            Kategori
+                          </label>
+                          <select
                             id="category"
-                            className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Champagne, Rött vin, ..."
+                            name="category"
+                            className="mb-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            defaultValue={EntryCategorys[0].name}
+                            value={entry.category}
                             onChange={(e) => setEntry({...entry, category: e.target.value})}
-                          />
+                          >
+                            <option value=""></option>
+                            {EntryCategorys.map((category) => (
+                              <option key={category.name} value={category.name}>
+                                {category.name}
+                              </option>
+                            ))}
+                          </select>
                         </div>
 
                         <label htmlFor="amount" className="mt-2 block text-sm font-medium leading-6 text-gray-900">

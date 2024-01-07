@@ -17,7 +17,7 @@ export const EntryCategorys : ICategory[] = [
     icon: 'img/categoryicons/champagne.png'
   },
   {
-    name: 'Alcohol',
+    name: 'Vitt vin',
     color: 'beige',
     icon: 'img/categoryicons/white-wine.png'
   },
