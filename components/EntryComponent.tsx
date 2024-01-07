@@ -13,6 +13,7 @@ import Link from "next/link";
 import { classNames } from "@/utils/tools";
 import { formatCurrencySEK } from "@/utils/format";
 import { LinkIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-hot-toast"
 
 export const defaultEntry : IEntry = {
   name: "",
@@ -72,7 +73,12 @@ const IndexComponent = (props: Props) => {
     })
     const res = await fetch(`/api/entry?${params.toString()}`, settings);
     
-    router.push('/')
+    if (res.status === 200) {
+      toast.success("Flaskan raderades")
+      router.push('/')
+    } else {
+      toast.error("Flaskan kunde inte raderas. Försök igen.")
+    }
   }
 
   return (

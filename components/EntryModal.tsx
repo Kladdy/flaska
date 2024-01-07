@@ -6,6 +6,7 @@ import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react
 import { defaultEntry } from "./EntryComponent";
 import { EntryCategorys } from "@/models/category";
 import { getSystembolagetLink, getVivinoLink } from "./EntryGridList";
+import { toast } from "react-hot-toast"
 
 interface Props {
   show: boolean;
@@ -82,7 +83,20 @@ function EntryModal(props: Props) {
     const response = await fetch("/api/entry", settings);
 
     if (response.status === 200) {
+      if (newEntry._id) {
+        toast.success("Flaskan sparades")
+      } else {
+        toast.success("Flaskan skapades")
+      }
+      
       props.handleSavedEntry();
+    } else {
+      if (newEntry._id) {
+        toast.error("Flaskan kunde inte sparas. Se över fälten och försök igen.")
+      } else {
+        toast.error("Flaskan kunde inte skapas. Se över fälten och försök igen.")
+      }
+      
     }
   }
 
@@ -152,7 +166,7 @@ function EntryModal(props: Props) {
                             name="name"
                             id="name"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Chardonnay ..."
+                            placeholder="Chardonnay..."
                             value={entry.name}
                             onChange={(e) => setEntry({...entry, name: e.target.value})}
                           />
