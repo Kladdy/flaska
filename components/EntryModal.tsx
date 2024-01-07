@@ -5,12 +5,14 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import { defaultEntry } from "./EntryComponent";
 import { EntryCategorys } from "@/models/category";
+import { getSystembolagetLink, getVivinoLink } from "./EntryGridList";
 
 interface Props {
   show: boolean;
   showModalAction: Function;
   handleSavedEntry: Function,
   user: UserProfile;
+  entryToOverwriteWith?: IEntry;
 }
 
 function EntryModal(props: Props) {
@@ -18,38 +20,40 @@ function EntryModal(props: Props) {
   const vivinoPrefix: string = "vivino|"
   const cancelButtonRef = useRef(null);
   const [entry, setEntry] = useState<IEntry>(defaultEntry);
-  const [uploadedImageName, setUploadedImageName] = useState<String>("");  
+  // const [uploadedImageName, setUploadedImageName] = useState<String>("");
+  const [systembolagetLink, setSystembolagetLink] = useState<string>("");
+  const [vivinoLink, setVivinoLink] = useState<string>("");
   
-  const handleLink1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const oldLinks:string[] = entry.links;
+  // const handleLink1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const oldLinks:string[] = entry.links;
 
-    let newLinks: string[] = Array.from(oldLinks);
-    newLinks[0] = systembolagetPrefix + event.target.value;
-    setEntry({...entry, links:newLinks});
-  };
+  //   let newLinks: string[] = Array.from(oldLinks);
+  //   newLinks[0] = systembolagetPrefix + event.target.value;
+  //   setEntry({...entry, links:newLinks});
+  // };
 
-  const handleLink2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const oldLinks:string[] = entry.links;
+  // const handleLink2Change = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const oldLinks:string[] = entry.links;
 
-    let newLinks: string[] = Array.from(oldLinks);
-    newLinks[1] = vivinoPrefix + event.target.value;
-    setEntry({...entry, links:newLinks});
-  };
+  //   let newLinks: string[] = Array.from(oldLinks);
+  //   newLinks[1] = vivinoPrefix + event.target.value;
+  //   setEntry({...entry, links:newLinks});
+  // };
 
-  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const uploadedFile: File | undefined = event.target.files?.[0];
-    if (uploadedFile) {
-      setUploadedImageName(uploadedFile.name);
-      //Convert image to base64 string
-      const reader: FileReader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        // setEntry({...entry, imageSmall:base64String});
-        // setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
-      };
-      reader.readAsDataURL(uploadedFile);
-    }
-  };
+  // const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const uploadedFile: File | undefined = event.target.files?.[0];
+  //   if (uploadedFile) {
+  //     setUploadedImageName(uploadedFile.name);
+  //     //Convert image to base64 string
+  //     const reader: FileReader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const base64String = reader.result as string;
+  //       // setEntry({...entry, imageSmall:base64String});
+  //       // setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
+  //     };
+  //     reader.readAsDataURL(uploadedFile);
+  //   }
+  // };
 
   const handleSaveEntry = async () => {
     sendNewEntryToServer();
@@ -57,25 +61,46 @@ function EntryModal(props: Props) {
   };
 
   const sendNewEntryToServer = async () => {
-      const settings = {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({...entry, userId: props.user.sub}),
-      };
-      const response = await fetch("/api/entry", settings);
+    // Add links to entry
+    const newEntry = {...entry}
+    newEntry.links = []
+    if (systembolagetLink) {
+      newEntry.links.push(systembolagetPrefix + systembolagetLink)
+    }
+    if (vivinoLink) {
+      newEntry.links.push(vivinoPrefix + vivinoLink)
+    }
 
-      if (response.status === 200) {
-        props.handleSavedEntry();
-      }
+    const settings = {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({...newEntry, userId: props.user.sub}),
+    };
+    const response = await fetch("/api/entry", settings);
+
+    if (response.status === 200) {
+      props.handleSavedEntry();
+    }
   }
 
   const handleCloseModal = () => {
     props.showModalAction();
     setEntry(defaultEntry)
+    setSystembolagetLink("")
+    setVivinoLink("")
   };
+
+  useEffect(() => {
+    console.log(props.entryToOverwriteWith)
+    if (props.entryToOverwriteWith) {
+      setEntry({...props.entryToOverwriteWith})
+      setSystembolagetLink(getSystembolagetLink(props.entryToOverwriteWith) ?? "")
+      setVivinoLink(getVivinoLink(props.entryToOverwriteWith) ?? "")
+    }
+  }, [props.entryToOverwriteWith])
 
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -128,6 +153,7 @@ function EntryModal(props: Props) {
                             id="name"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Chardonnay ..."
+                            value={entry.name}
                             onChange={(e) => setEntry({...entry, name: e.target.value})}
                           />
                         </div>
@@ -141,7 +167,7 @@ function EntryModal(props: Props) {
                             name="description"
                             id="description"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            defaultValue={""}
+                            value={entry.description} 
                             onChange={(e) => setEntry({...entry, description: e.target.value})}
                           />
                         </div>
@@ -154,7 +180,6 @@ function EntryModal(props: Props) {
                             id="category"
                             name="category"
                             className="mb-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            defaultValue={EntryCategorys[0].name}
                             value={entry.category}
                             onChange={(e) => setEntry({...entry, category: e.target.value})}
                           >
@@ -177,6 +202,7 @@ function EntryModal(props: Props) {
                             id="amount"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder=""
+                            value={entry.amount}
                             onChange={(e) => setEntry({...entry, amount: e.target.valueAsNumber})}
                           />
                         </div>
@@ -191,6 +217,7 @@ function EntryModal(props: Props) {
                             id="location"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Vinkyl 3, Hylla 2, ..."
+                            value={entry.location}
                             onChange={(e) => setEntry({...entry, location: e.target.value})}
                           />
                         </div>
@@ -205,6 +232,7 @@ function EntryModal(props: Props) {
                             id="origin"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Frankrike, Sverige, ..."
+                            value={entry.origin}
                             onChange={(e) => setEntry({...entry, origin: e.target.value})}
                           />
                         </div>
@@ -219,6 +247,7 @@ function EntryModal(props: Props) {
                             id="price"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder=""
+                            value={entry.price}
                             onChange={(e) => setEntry({...entry, price: e.target.valueAsNumber})}
                           />
                         </div>
@@ -233,6 +262,7 @@ function EntryModal(props: Props) {
                             id="storage"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="Varmt, mörkt, liggandes, ..."
+                            value={entry.storage}
                             onChange={(e) => setEntry({...entry, storage: e.target.value})}
                           />
                         </div>
@@ -247,7 +277,8 @@ function EntryModal(props: Props) {
                             id="link1"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="https://www.systembolaget.se/..."
-                            onChange={handleLink1Change}
+                            value={systembolagetLink}
+                            onChange={(e) => setSystembolagetLink(e.target.value)}
                           />
                         </div>
 
@@ -261,11 +292,12 @@ function EntryModal(props: Props) {
                             id="link2"
                             className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             placeholder="https://www.vivino.com/..."
-                            onChange={handleLink2Change}
+                            value={vivinoLink}
+                            onChange={(e) => setVivinoLink(e.target.value)}
                           />
                         </div>
 
-                        <label htmlFor="cover-photo" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
+                        {/* <label htmlFor="cover-photo" className="mt-2 block text-sm font-medium leading-6 text-gray-900">
                           Cover photo
                         </label>
                         <div className="mb-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
@@ -292,7 +324,7 @@ function EntryModal(props: Props) {
                               {uploadedImageName}
                             </p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

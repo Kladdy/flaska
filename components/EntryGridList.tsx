@@ -11,19 +11,19 @@ interface Props {
 
 const getEntrySubtitle = (entry: IEntry) => {
   const components : string[] = []
-  entry.amount ? components.push(`${entry.amount} st`) : components.push('Okänd mängd')
+  entry.amount || entry.amount == 0 ? components.push(`${entry.amount} st`) : components.push('Okänd mängd')
   entry.location ? components.push(`${entry.location}`) : components.push('Okänd plats')
-  entry.price ? components.push(`${formatCurrencySEK(entry.price)}`) : components.push('Inget pris')
+  entry.price || entry.price == 0 ? components.push(`${formatCurrencySEK(entry.price)}`) : components.push('Inget pris')
   entry.origin ? components.push(`${entry.origin}`) : null
   return components.join(' | ')
 }
 
-const getSystembolagetLink = (entry: IEntry) => {
+export const getSystembolagetLink = (entry: IEntry) => {
   const systembolagetLink = entry.links.find(x => x?.startsWith("systembolaget|"))
   if (systembolagetLink) return systembolagetLink.split('|')[1]
 }
 
-const getVivinoLink = (entry: IEntry) => {
+export const getVivinoLink = (entry: IEntry) => {
   const vivinoLink = entry.links.find(x => x?.startsWith("vivino|"))
   if (vivinoLink) return vivinoLink.split('|')[1]
 }
@@ -33,7 +33,7 @@ const getEntryCategory = (entry: IEntry) => {
   return entryCategory ? entryCategory : DefaultCategory
 }
 
-const getPillColors = (entry: IEntry) => {
+export const getPillColors = (entry: IEntry) => {
   const entryCategory = getEntryCategory(entry)
   const color = entryCategory.color
   switch (color) {
@@ -83,7 +83,7 @@ const EntryGridList = (props: Props) => {
           </Link>
           <div>
             <div className="-mt-px flex divide-x divide-gray-200">
-              {getSystembolagetLink(entry) && (
+              {!!getSystembolagetLink(entry) && (
                 <div className="flex w-0 flex-1">
                   <a
                     href={getSystembolagetLink(entry)}
@@ -94,7 +94,7 @@ const EntryGridList = (props: Props) => {
                   </a>
                 </div>
               )}
-              {getVivinoLink(entry) && (
+              {!!getVivinoLink(entry) && (
                 <div className="-ml-px flex w-0 flex-1">
                   <a
                     href={getVivinoLink(entry)}

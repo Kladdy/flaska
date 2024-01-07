@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  let id = request.nextUrl.searchParams.get("id");
-  const data = await request.json();
+  const data = await request.json() as IEntry;
+  let id = data._id?.toString()
 
   // If no id is provided, create a new id
   if (!id) id = new mongoose.Types.ObjectId().toString();
