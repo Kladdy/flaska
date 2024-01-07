@@ -18,7 +18,7 @@ const TitleComponent = (props: Props) => {
       
       <h3 className="flex flex-col items-center text-l font-semibold mt-5">
         <p className="">Välkommen, {props.user.name}!</p>
-        <a className="hover:underline" href="/api/auth/logout">Logga ut</a>
+        <a className="hover:underline text-gray-500" href="/api/auth/logout">Logga ut</a>
       </h3>
     </div>
   )
