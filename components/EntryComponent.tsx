@@ -6,15 +6,32 @@ import { Dialog, Transition } from "@headlessui/react";
 import CheckIcon from "@heroicons/react/16/solid/CheckIcon";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import EntryModal from "./EntryModal";
-import Link from "next/link";
+import { useSearchParams } from 'next/navigation'
 import TitleComponent from "./TitleComponent";
+
+export const defaultEntry : IEntry = {
+  name: "",
+  description: "",
+  category: "",
+  amount: 0,
+  location: "",
+  origin: "",
+  price: 0,
+  storage: "",
+  links: [],
+  imageSmall: "",
+  imageLarge: ""
+}
 
 interface Props {
   user: UserProfile;
 }
 
 const IndexComponent = (props: Props) => {
-  const [entrys, setEntrys] = useState<IEntry[]>([]);
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+
+  const [entry, setEntry] = useState<IEntry>(defaultEntry);
   const [showEntryModal, setShowEntryModal] = useState(false);
   
   const showModalHandler = () => {
@@ -29,30 +46,24 @@ const IndexComponent = (props: Props) => {
   }, []);
 
   const fetchData = async () => {
-    const res = await fetch("/api/entrys");
-    const data: IEntry[] = await res.json();
-    setEntrys(data);
+    const params = new URLSearchParams({
+      id: id as string,
+    })
+    const res = await fetch(`/api/entry?${params.toString()}`);
+    const data: IEntry = await res.json();
+    setEntry(data);
   };
 
   return (
     <>
       <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} user={props.user} />
+    
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <TitleComponent
           user={props.user}
         />
 
-        <div className="flex flex-col items-center my-10">
-          <button
-            type="button"
-            className="rounded bg-indigo-500 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-            onClick={() => setShowEntryModal(true)}
-          >
-            Lägg till flaska
-          </button>
-        </div>
-
-        <EntryGridList entrys={entrys} />
+        {/* <EntryGridList entrys={entrys} /> */}
       </div>
     </>
   );

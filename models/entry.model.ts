@@ -16,25 +16,6 @@ export interface IEntry {
   imageLarge: string,
 };
 
-const DefaultEntry : IEntry = {
-  name: "",
-  description: "",
-  category: "",
-  amount: 0,
-  location: "",
-  origin: "",
-  price: 0,
-  storage: "",
-  links: [],
-  imageSmall: "",
-  imageLarge: ""
-}
-
-export const getDefaultEntry = () => {
-  return JSON.parse(JSON.stringify(DefaultEntry)) as IEntry;
-}
-
-
 const EntrySchema: Schema = new Schema<IEntry>({
   name: {
     type: String,

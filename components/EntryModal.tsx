@@ -3,6 +3,7 @@ import { UserProfile } from "@auth0/nextjs-auth0/client";
 import { Dialog, Transition } from "@headlessui/react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
+import { defaultEntry } from "./EntryComponent";
 
 interface Props {
   show: boolean;
@@ -15,21 +16,7 @@ function EntryModal(props: Props) {
   const systembolagetPrefix: string = "systembolaget|";
   const vivinoPrefix: string = "vivino|"
   const cancelButtonRef = useRef(null);
-  const dataEntry: IEntry = {
-    name: "",
-    userId: "",
-    description: "",
-    category: "",
-    amount: 0,
-    location: "",
-    origin: "",
-    price: 0,
-    storage: "",
-    links: [],
-    imageSmall: "",
-    imageLarge: ""
-  }
-  const [entry, setEntry] = useState<IEntry>(dataEntry);
+  const [entry, setEntry] = useState<IEntry>(defaultEntry);
   const [uploadedImageName, setUploadedImageName] = useState<String>("");  
   
   const handleLink1Change = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +73,7 @@ function EntryModal(props: Props) {
 
   const handleCloseModal = () => {
     props.showModalAction();
-    setEntry(dataEntry)
+    setEntry(defaultEntry)
   };
 
   return (
