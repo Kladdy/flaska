@@ -2,7 +2,8 @@ import { DefaultCategory, EntryCategorys } from '@/models/category'
 import { IEntry } from '@/models/entry.model'
 import { formatCurrencySEK } from '@/utils/format'
 import { classNames } from '@/utils/tools'
-import { StarIcon, BuildingStorefrontIcon } from '@heroicons/react/20/solid'
+import { StarIcon, BuildingStorefrontIcon, ArrowRightIcon } from '@heroicons/react/20/solid'
+import Link from 'next/link'
 
 interface Props {
   entrys: IEntry[]
@@ -61,7 +62,10 @@ const EntryGridList = (props: Props) => {
     <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {props.entrys.map((entry) => (
         <li key={entry._id!.toString()} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
-          <div className="flex w-full items-center justify-between space-x-6 p-6">
+          <Link 
+            href={`/entry?id=${entry._id}`}
+            className="hover:bg-gray-200 hover:rounded-t-lg flex w-full items-center justify-between space-x-6 p-6"
+          >
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
                 <h3 className="truncate text-sm font-medium text-gray-900">{entry.name}</h3>
@@ -76,14 +80,14 @@ const EntryGridList = (props: Props) => {
             </div>
             {/* <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={entry.imageSmall} alt="" /> */}
             <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={getEntryCategory(entry).icon} alt="" />
-          </div>
+          </Link>
           <div>
             <div className="-mt-px flex divide-x divide-gray-200">
               {getSystembolagetLink(entry) && (
                 <div className="flex w-0 flex-1">
                   <a
                     href={getSystembolagetLink(entry)}
-                    className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                    className="hover:bg-gray-200 relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                   >
                     <BuildingStorefrontIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     Systembolaget
@@ -94,11 +98,21 @@ const EntryGridList = (props: Props) => {
                 <div className="-ml-px flex w-0 flex-1">
                   <a
                     href={getVivinoLink(entry)}
-                    className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                   >
                     <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     Vivino
                   </a>
+                </div>
+              )}
+              {!getSystembolagetLink(entry) && !getVivinoLink(entry) && (
+                <div className="flex w-0 flex-1">
+                  <Link 
+                    href={`/entry?id=${entry._id}`}
+                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-b-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                  >
+                    <ArrowRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </Link>
                 </div>
               )}
             </div>
