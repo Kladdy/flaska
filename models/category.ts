@@ -4,7 +4,7 @@ export interface ICategory {
   icon: string,
 }
 
-export const DefaultCategory : ICategory =   {
+export const DefaultCategory : ICategory = {
   name: 'Annat',
   color: 'gray',
   icon: 'img/categoryicons/other.png'
@@ -17,7 +17,7 @@ export const EntryCategorys : ICategory[] = [
     icon: 'img/categoryicons/champagne.png'
   },
   {
-    name: 'Alcohol',
+    name: 'Vitt vin',
     color: 'beige',
     icon: 'img/categoryicons/white-wine.png'
   },

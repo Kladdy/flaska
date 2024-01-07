@@ -3,7 +3,7 @@ import { models, model, Schema, Document } from 'mongoose';
 export interface IEntry {
   _id?: Schema.Types.ObjectId
   name: string,
-  userId: string, 
+  userId?: string, 
   description: string,
   category: string,
   amount: number,
