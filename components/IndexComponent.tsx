@@ -47,7 +47,7 @@ const IndexComponent = (props: Props) => {
         >
           Lägg till flaska
         </button>
-        <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} userId={props.user.sub} />
+        <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} user={props.user} />
       </div>
 
       <EntryGridList entrys={entrys} />
