@@ -19,12 +19,12 @@ const getEntrySubtitle = (entry: IEntry) => {
 }
 
 const getSystembolagetLink = (entry: IEntry) => {
-  const systembolagetLink = entry.links.find(x => x.startsWith("systembolaget|"))
+  const systembolagetLink = entry.links.find(x => x?.startsWith("systembolaget|"))
   if (systembolagetLink) return systembolagetLink.split('|')[1]
 }
 
 const getVivinoLink = (entry: IEntry) => {
-  const vivinoLink = entry.links.find(x => x.startsWith("vivino|"))
+  const vivinoLink = entry.links.find(x => x?.startsWith("vivino|"))
   if (vivinoLink) return vivinoLink.split('|')[1]
 }
 
