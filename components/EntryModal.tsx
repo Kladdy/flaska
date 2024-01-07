@@ -55,8 +55,8 @@ function EntryModal(props: Props) {
       const reader: FileReader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        setEntry({...entry, imageSmall:base64String});
-        setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
+        // setEntry({...entry, imageSmall:base64String});
+        // setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
       };
       reader.readAsDataURL(uploadedFile);
     }
