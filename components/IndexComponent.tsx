@@ -35,8 +35,13 @@ const IndexComponent = (props: Props) => {
   return (
     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div className="flex flex-col items-center my-10">
-        <p className="">Welcome {props.user.name}!</p>
-        <a href="/api/auth/logout">Logout</a>
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
+          flaska
+        </h1>
+        <h3 className="flex flex-col items-center text-l font-semibold mt-5">
+          <p className="">Välkommen, {props.user.name}!</p>
+          <a className="hover:underline" href="/api/auth/logout">Logga ut</a>
+        </h3>
       </div>
 
       <div className="flex flex-col items-center my-10">
@@ -47,7 +52,7 @@ const IndexComponent = (props: Props) => {
         >
           Lägg till flaska
         </button>
-        <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} userId={props.user.sub} />
+        <EntryModal show={showEntryModal} showModalAction={showModalHandler} handleSavedEntry={handleSavedEntry} user={props.user} />
       </div>
 
       <EntryGridList entrys={entrys} />

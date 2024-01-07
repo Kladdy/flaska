@@ -1,4 +1,5 @@
 import { IEntry } from "@/models/entry.model";
+import { UserProfile } from "@auth0/nextjs-auth0/client";
 import { Dialog, Transition } from "@headlessui/react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
@@ -7,14 +8,14 @@ interface Props {
   show: boolean;
   showModalAction: Function;
   handleSavedEntry: Function,
-  userId: string | null | undefined;
+  user: UserProfile;
 }
 
 function EntryModal(props: Props) {
   const systembolagetPrefix: string = "systembolaget|";
   const vivinoPrefix: string = "vivino|"
   const cancelButtonRef = useRef(null);
-  const dataEntry:IEntry = {
+  const dataEntry: IEntry = {
     name: "",
     userId: "",
     description: "",
@@ -55,20 +56,14 @@ function EntryModal(props: Props) {
       const reader: FileReader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        setEntry({...entry, imageSmall:base64String});
-        setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
+        // setEntry({...entry, imageSmall:base64String});
+        // setEntry({...entry, imageSmall:base64String}); //TODO: add large image as well
       };
       reader.readAsDataURL(uploadedFile);
     }
   };
 
   const handleSaveEntry = async () => {
-    //Extract userid from string
-    let strippedUserId: string;
-    if (props.userId) {
-      strippedUserId = props.userId.split("|")[1];
-      entry.userId = strippedUserId;
-    }
     sendNewEntryToServer();
     handleCloseModal();
   };
@@ -80,7 +75,7 @@ function EntryModal(props: Props) {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(entry),
+        body: JSON.stringify({...entry, userId: props.user.sub}),
       };
       const response = await fetch("/api/entry", settings);
 
