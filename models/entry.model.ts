@@ -3,7 +3,7 @@ import { models, model, Schema, Document } from 'mongoose';
 export interface IEntry {
   _id?: Schema.Types.ObjectId
   name: string,
-  userId: string, 
+  userId?: string, 
   description: string,
   category: string,
   amount: number,
@@ -15,6 +15,25 @@ export interface IEntry {
   imageSmall: string,
   imageLarge: string,
 };
+
+const DefaultEntry : IEntry = {
+  name: "",
+  description: "",
+  category: "",
+  amount: 0,
+  location: "",
+  origin: "",
+  price: 0,
+  storage: "",
+  links: [],
+  imageSmall: "",
+  imageLarge: ""
+}
+
+export const getDefaultEntry = () => {
+  return JSON.parse(JSON.stringify(DefaultEntry)) as IEntry;
+}
+
 
 const EntrySchema: Schema = new Schema<IEntry>({
   name: {
