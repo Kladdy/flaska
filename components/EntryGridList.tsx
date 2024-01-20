@@ -3,6 +3,7 @@ import { IEntry } from '@/models/entry.model'
 import { formatCurrencySEK } from '@/utils/format'
 import { classNames } from '@/utils/tools'
 import { StarIcon, BuildingStorefrontIcon, ArrowRightIcon } from '@heroicons/react/20/solid'
+import Image from 'next/image'
 import Link from 'next/link'
 
 interface Props {
@@ -28,7 +29,7 @@ export const getVivinoLink = (entry: IEntry) => {
   if (vivinoLink) return vivinoLink.split('|')[1]
 }
 
-const getEntryCategory = (entry: IEntry) => {
+export const getEntryCategory = (entry: IEntry) => {
   const entryCategory = EntryCategorys.find(x => x.name === entry.category)
   return entryCategory ? entryCategory : DefaultCategory
 }
@@ -79,7 +80,7 @@ const EntryGridList = (props: Props) => {
               <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-300">{getEntrySubtitle(entry)}</p>
             </div>
             {/* <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={entry.imageSmall} alt="" /> */}
-            <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={getEntryCategory(entry).icon} alt="" />
+            <Image width={40} height={40} className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={getEntryCategory(entry).icon} alt="" />
           </Link>
           <div>
             <div className="-mt-px flex divide-x divide-gray-200 dark:divide-gray-500">

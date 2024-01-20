@@ -1,6 +1,6 @@
 import { IEntry } from "@/models/entry.model";
 import { Fragment, useEffect, useRef, useState } from "react";
-import EntryGridList, { getPillColors, getSystembolagetLink, getVivinoLink } from "./EntryGridList";
+import EntryGridList, { getEntryCategory, getPillColors, getSystembolagetLink, getVivinoLink } from "./EntryGridList";
 import { UserProfile } from "@auth0/nextjs-auth0/client";
 import { Dialog, Transition } from "@headlessui/react";
 import CheckIcon from "@heroicons/react/16/solid/CheckIcon";
@@ -14,6 +14,8 @@ import { classNames } from "@/utils/tools";
 import { formatCurrencySEK } from "@/utils/format";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-hot-toast"
+import Image from "next/image";
+import LoadingDots from "./LoadingDots";
 
 export const defaultEntry : IEntry = {
   name: "",
@@ -110,111 +112,124 @@ const IndexComponent = (props: Props) => {
         </Link>
 
         <div className="overflow-hidden bg-white shadow sm:rounded-lg dark:bg-slate-800 border-2 dark:border-gray-600">
-          <div className="flex flex-row justify-between">
-            <div className="px-4 py-6 sm:px-6">
-              <h3 className="text-base font-semibold leading-7 text-gray-900 dark:text-gray-100">{entry.name}</h3>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">Detaljer om denna flaska</p>
+          {!entry._id ? 
+          (
+            <div className="my-20">
+              <LoadingDots/>
             </div>
-            <div className="px-4 py-6 sm:px-6">
-              <div className="flex sm:flex-row gap-x-2 gap-y-2">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                  onClick={() => {
-                    if (reallyDelete) {
-                      deleteEntry()
-                    } else {
-                      setReallyDelete(true)
-                      setTimeout(() => setReallyDelete(false), 4000)
-                    }
-                  }}
-                >
-                  <TrashIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                  {reallyDelete ? "Klicka igen för att radera" : "Radera flaska..."}
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  onClick={() => {
-                    setEntryToOverwriteWith(entry)
-                    setShowEntryModal(true)
-                  }}
-                >
-                  <PencilSquareIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                  Redigera flaska
-                </button>
+          ) : (
+            <div>
+
+              <div className="flex flex-col items-center mt-5">
+                <Image width={160} height={160} className="h-40 w-40 flex-shrink-0 rounded-full bg-gray-300" src={getEntryCategory(entry).icon} alt="" />
+              </div>
+              <div className="flex flex-row justify-between">
+                <div className="px-4 py-6 sm:px-6">
+                  <h3 className="text-base font-semibold leading-7 text-gray-900 dark:text-gray-100">{entry.name}</h3>
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">Detaljer om denna flaska</p>
+                </div>
+                <div className="px-4 py-6 sm:px-6">
+                  <div className="flex sm:flex-row gap-x-2 gap-y-2">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                      onClick={() => {
+                        if (reallyDelete) {
+                          deleteEntry()
+                        } else {
+                          setReallyDelete(true)
+                          setTimeout(() => setReallyDelete(false), 4000)
+                        }
+                      }}
+                    >
+                      <TrashIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+                      {reallyDelete ? "Klicka igen för att radera" : "Radera flaska..."}
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      onClick={() => {
+                        setEntryToOverwriteWith(entry)
+                        setShowEntryModal(true)
+                      }}
+                    >
+                      <PencilSquareIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+                      Redigera flaska
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-100 dark:border-gray-500">
+                <dl className="divide-y divide-gray-100 dark:divide-gray-500">
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Namn</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.name}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Beskrivning</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.description}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Kategori</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
+                      <span className={classNames("inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 font-medium ring-1 ring-inset", getPillColors(entry))}>
+                        {entry.category}
+                      </span>
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Antal</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.amount || entry.amount == 0 ? `${entry.amount} st` : 'Okänd mängd'}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Plats</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.location}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Ursprung</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.origin}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Pris</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.price || entry.price == 0 ? `${formatCurrencySEK(entry.price)}` : 'Inget pris'}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Lagring</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.storage}</dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Länk till Systembolaget</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
+                      {!!getSystembolagetLink(entry) && (
+                        <a
+                          href={getSystembolagetLink(entry)}
+                          className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
+                        >
+                          <LinkIcon className="h-5 w-5 pt-1 text-gray-400" aria-hidden="true" />
+                          {getSystembolagetLink(entry)}
+                        </a>
+                      )}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Länk till Vivino</dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
+                      {!!getVivinoLink(entry) && (
+                        <a
+                          href={getVivinoLink(entry)}
+                          className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
+                        >
+                          <LinkIcon className="h-5 w-5 pt-1 text-gray-400" aria-hidden="true" />
+                          {getVivinoLink(entry)}
+                        </a>
+                      )}
+                    </dd>
+                  </div>
+                </dl>
               </div>
             </div>
-          </div>
-          
-          <div className="border-t border-gray-100 dark:border-gray-500">
-            <dl className="divide-y divide-gray-100 dark:divide-gray-500">
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Namn</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.name}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Beskrivning</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.description}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Kategori</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
-                  <span className={classNames("inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 font-medium ring-1 ring-inset", getPillColors(entry))}>
-                    {entry.category}
-                  </span>
-                </dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Antal</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.amount || entry.amount == 0 ? `${entry.amount} st` : 'Okänd mängd'}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Plats</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.location}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Ursprung</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.origin}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Pris</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.price || entry.price == 0 ? `${formatCurrencySEK(entry.price)}` : 'Inget pris'}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Lagring</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">{entry.storage}</dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Länk till Systembolaget</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
-                  {!!getSystembolagetLink(entry) && (
-                    <a
-                      href={getSystembolagetLink(entry)}
-                      className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
-                    >
-                      <LinkIcon className="h-5 w-5 pt-1 text-gray-400" aria-hidden="true" />
-                      {getSystembolagetLink(entry)}
-                    </a>
-                  )}
-                </dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-900 dark:text-gray-100">Länk till Vivino</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
-                  {!!getVivinoLink(entry) && (
-                    <a
-                      href={getVivinoLink(entry)}
-                      className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
-                    >
-                      <LinkIcon className="h-5 w-5 pt-1 text-gray-400" aria-hidden="true" />
-                      {getVivinoLink(entry)}
-                    </a>
-                  )}
-                </dd>
-              </div>
-            </dl>
-          </div>
+          )}
         </div>
       </div>
     </>

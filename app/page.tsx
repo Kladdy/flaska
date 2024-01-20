@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 export default function Index() {
   const { user, error, isLoading } = useUser();
 
-  if (isLoading) return <LoadingDots />;
+  if (isLoading) return <LoadingDots fullHeight={true} />;
   if (error) return <div>{error.message}</div>;
 
   if (user) {
