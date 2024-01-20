@@ -61,7 +61,7 @@ const EntryGridList = (props: Props) => {
   return (
     <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {props.entrys.map((entry) => (
-        <li key={entry._id!.toString()} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+        <li key={entry._id!.toString()} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow border-2">
           <Link 
             href={`/entry?id=${entry._id}`}
             className="hover:bg-gray-200 hover:rounded-t-lg flex w-full items-center justify-between space-x-6 p-6"
