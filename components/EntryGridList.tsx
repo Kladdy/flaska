@@ -61,14 +61,14 @@ const EntryGridList = (props: Props) => {
   return (
     <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {props.entrys.map((entry) => (
-        <li key={entry._id!.toString()} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow border-2">
+        <li key={entry._id!.toString()} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow border-2 dark:bg-slate-800 dark:divide-gray-400 dark:border-gray-600">
           <Link 
             href={`/entry?id=${entry._id}`}
-            className="hover:bg-gray-200 hover:rounded-t-lg flex w-full items-center justify-between space-x-6 p-6"
+            className="hover:bg-gray-200 hover:rounded-t-lg flex w-full items-center justify-between space-x-6 p-6 dark:hover:bg-gray-600"
           >
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
-                <h3 className="truncate text-sm font-medium text-gray-900">{entry.name}</h3>
+                <h3 className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{entry.name}</h3>
                 {!!entry.category && (
                   // <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                   <span className={classNames("inline-flex flex-shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset", getPillColors(entry))}>
@@ -76,7 +76,7 @@ const EntryGridList = (props: Props) => {
                   </span>
                 )}
               </div>
-              <p className="mt-1 truncate text-sm text-gray-500">{getEntrySubtitle(entry)}</p>
+              <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-300">{getEntrySubtitle(entry)}</p>
             </div>
             {/* <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={entry.imageSmall} alt="" /> */}
             <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={getEntryCategory(entry).icon} alt="" />
@@ -87,9 +87,9 @@ const EntryGridList = (props: Props) => {
                 <div className="flex w-0 flex-1">
                   <a
                     href={getSystembolagetLink(entry)}
-                    className="hover:bg-gray-200 relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                    className="hover:bg-gray-200 relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:hover:bg-gray-600"
                   >
-                    <BuildingStorefrontIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <BuildingStorefrontIcon className="h-5 w-5 text-gray-400 dark:text-gray-300" aria-hidden="true" />
                     Systembolaget
                   </a>
                 </div>
@@ -98,9 +98,9 @@ const EntryGridList = (props: Props) => {
                 <div className="-ml-px flex w-0 flex-1">
                   <a
                     href={getVivinoLink(entry)}
-                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:hover:bg-gray-600"
                   >
-                    <StarIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <StarIcon className="h-5 w-5 text-gray-400 dark:text-gray-300" aria-hidden="true" />
                     Vivino
                   </a>
                 </div>
@@ -109,9 +109,9 @@ const EntryGridList = (props: Props) => {
                 <div className="flex w-0 flex-1">
                   <Link 
                     href={`/entry?id=${entry._id}`}
-                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-b-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                    className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-b-lg border border-transparent py-4 text-sm font-semibold text-gray-900  dark:hover:bg-gray-600"
                   >
-                    <ArrowRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <ArrowRightIcon className="h-5 w-5 text-gray-400 dark:text-gray-300" aria-hidden="true" />
                   </Link>
                 </div>
               )}
