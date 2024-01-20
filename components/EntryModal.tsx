@@ -108,7 +108,6 @@ function EntryModal(props: Props) {
   };
 
   useEffect(() => {
-    console.log(props.entryToOverwriteWith)
     if (props.entryToOverwriteWith) {
       setEntry({...props.entryToOverwriteWith})
       setSystembolagetLink(getSystembolagetLink(props.entryToOverwriteWith) ?? "")
