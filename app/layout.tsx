@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Toaster } from 'react-hot-toast';
+import { classNames } from '@/utils/tools';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +20,7 @@ export default function RootLayout({
   return (
     <UserProvider>
       <html lang="sv">
-        <body className={inter.className}>
+        <body className={classNames(inter.className)}>
           <Toaster
            position="bottom-center"
            reverseOrder={false}

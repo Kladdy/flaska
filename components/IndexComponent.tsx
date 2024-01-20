@@ -9,6 +9,7 @@ import EntryModal from "./EntryModal";
 import Link from "next/link";
 import TitleComponent from "./TitleComponent";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import LoadingDots from "./LoadingDots";
 
 interface Props {
   user: UserProfile;
@@ -16,12 +17,14 @@ interface Props {
 
 const IndexComponent = (props: Props) => {
   const [entrys, setEntrys] = useState<IEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showEntryModal, setShowEntryModal] = useState(false);
   
   const showModalHandler = () => {
     setShowEntryModal(!showEntryModal);
   }
   const handleSavedEntry = () => {
+    setLoading(true);
     fetchData();
   }
 
@@ -33,6 +36,7 @@ const IndexComponent = (props: Props) => {
     const res = await fetch("/api/entrys");
     const data: IEntry[] = await res.json();
     setEntrys(data);
+    setLoading(false);
   };
 
   return (
@@ -54,7 +58,15 @@ const IndexComponent = (props: Props) => {
           </button>
         </div>
 
-        <EntryGridList entrys={entrys} />
+        {loading ? 
+        (
+          <div className="my-28">
+            <LoadingDots/>
+          </div>
+        ) : (
+          <EntryGridList entrys={entrys} />
+        )}
+
       </div>
     </>
   );
