@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --foreground-rgb: 0, 0, 0;
-  /* --background-start-rgb: 214, 219, 220; */
   --background-start-rgb: 240, 243, 244;
   --background-end-rgb: 255, 255, 255;
 }
@@ -12,10 +11,16 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    /* --background-start-rgb: 0, 0, 0; */
     --background-start-rgb: 2, 6, 23;
     --background-end-rgb: 0, 0, 0;
   }
+} */
+
+/* Force darkmode. To revert, remove the following :root and uncomment the ones above. Also, remove darkMode: 'class', from tailwind.config.js */
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 2, 6, 23;
+  --background-end-rgb: 0, 0, 0;
 }
 
 body {

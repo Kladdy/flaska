@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <UserProvider>
-      <html lang="sv">
+      <html lang="sv" className='dark'>
         <body className={classNames(inter.className)}>
           <Toaster
            position="bottom-center"
