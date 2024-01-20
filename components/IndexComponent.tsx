@@ -10,6 +10,7 @@ import Link from "next/link";
 import TitleComponent from "./TitleComponent";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import LoadingDots from "./LoadingDots";
+import SearchFilterSortComponent from "./SearchFilterSortComponent";
 
 interface Props {
   user: UserProfile;
@@ -64,7 +65,10 @@ const IndexComponent = (props: Props) => {
             <LoadingDots/>
           </div>
         ) : (
-          <EntryGridList entrys={entrys} />
+          <div>
+            <SearchFilterSortComponent entrys={entrys} setEntrys={setEntrys} />
+            <EntryGridList entrys={entrys} />
+          </div>
         )}
 
       </div>
