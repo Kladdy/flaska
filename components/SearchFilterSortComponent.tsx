@@ -6,6 +6,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/20/solid'
 import { classNames } from "@/utils/tools";
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { formatCurrencySEK } from "@/utils/format";
 
 interface Props {
   entrys: IEntry[];
@@ -26,37 +27,37 @@ interface Filters {
   origin: Filter[];
 }
 
-const filters : Filters = {
-  category: [
-    { value: '0', label: '$0 - $25', checked: false },
-    { value: '25', label: '$25 - $50', checked: false },
-    { value: '50', label: '$50 - $75', checked: false },
-    { value: '75', label: '$75+', checked: false },
-  ],
-  location: [
-    { value: 'white', label: 'White', checked: false },
-    { value: 'beige', label: 'Beige', checked: false },
-    { value: 'blue', label: 'Blue', checked: true },
-    { value: 'brown', label: 'Brown', checked: false },
-    { value: 'green', label: 'Green', checked: false },
-    { value: 'purple', label: 'Purple', checked: false },
-  ],
-  price: [
-    { value: 'xs', label: 'XS', checked: false },
-    { value: 's', label: 'S', checked: true },
-    { value: 'm', label: 'M', checked: false },
-    { value: 'l', label: 'L', checked: false },
-    { value: 'xl', label: 'XL', checked: false },
-    { value: '2xl', label: '2XL', checked: false },
-  ],
-  origin: [
-    { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
-    { value: 'tees', label: 'Tees', checked: false },
-    { value: 'objects', label: 'Objects', checked: false },
-    { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
-    { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
-  ],
-}
+// const filters : Filters = {
+//   category: [
+//     { value: '0', label: '$0 - $25', checked: false },
+//     { value: '25', label: '$25 - $50', checked: false },
+//     { value: '50', label: '$50 - $75', checked: false },
+//     { value: '75', label: '$75+', checked: false },
+//   ],
+//   location: [
+//     { value: 'white', label: 'White', checked: false },
+//     { value: 'beige', label: 'Beige', checked: false },
+//     { value: 'blue', label: 'Blue', checked: true },
+//     { value: 'brown', label: 'Brown', checked: false },
+//     { value: 'green', label: 'Green', checked: false },
+//     { value: 'purple', label: 'Purple', checked: false },
+//   ],
+//   price: [
+//     { value: 'xs', label: 'XS', checked: false },
+//     { value: 's', label: 'S', checked: true },
+//     { value: 'm', label: 'M', checked: false },
+//     { value: 'l', label: 'L', checked: false },
+//     { value: 'xl', label: 'XL', checked: false },
+//     { value: '2xl', label: '2XL', checked: false },
+//   ],
+//   origin: [
+//     { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
+//     { value: 'tees', label: 'Tees', checked: false },
+//     { value: 'objects', label: 'Objects', checked: false },
+//     { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
+//     { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
+//   ],
+// }
 
 interface SortOption {
   value: string;
@@ -72,12 +73,13 @@ interface SortOrder {
 
 const SearchFilterSortComponent = (props: Props) => {
   const [search, setSearch] = useState("");
-  // const [filters, setFilters] = useState<Filters>({
-  //   category: [],
-  //   location: [],
-  //   price: [],
-  //   origin: [],
-  // });
+  const [filters, setFilters] = useState<Filters>({
+    category: [],
+    location: [],
+    price: [],
+    origin: [],
+  });
+
   const [sortOptions, setSortOptions] = useState<SortOption[]>([
     { value: 'name', label: 'Namn', current: true },
     { value: 'category', label: 'Kategori', current: false },
@@ -99,7 +101,7 @@ const SearchFilterSortComponent = (props: Props) => {
     return amount;
   }
 
-  // Update list on search, filter or sort change
+  // Update list on search, filter or sort change. Also update if new data has been fetched
   useEffect(() => {
     let filteredEntrys = [...props.entrys];
 
@@ -112,6 +114,32 @@ const SearchFilterSortComponent = (props: Props) => {
     });
 
     // Filter
+    // If no filters are checked for a filter type, dont filter on that type
+    const categoryFilters = filters.category.filter((filter) => filter.checked);
+    const locationFilters = filters.location.filter((filter) => filter.checked);
+    const priceFilters = filters.price.filter((filter) => filter.checked);
+    const originFilters = filters.origin.filter((filter) => filter.checked);
+    console.log(categoryFilters);
+    if (categoryFilters.length > 0) {
+      filteredEntrys = filteredEntrys.filter((entry) => {
+        return categoryFilters.some((filter) => filter.value === getEntryCategory(entry).name);
+      });
+    }
+    if (locationFilters.length > 0) {
+      filteredEntrys = filteredEntrys.filter((entry) => {
+        return locationFilters.some((filter) => filter.value === entry.location);
+      });
+    }
+    if (priceFilters.length > 0) {
+      filteredEntrys = filteredEntrys.filter((entry) => {
+        return priceFilters.some((filter) => filter.value === entry.price.toString());
+      });
+    }
+    if (originFilters.length > 0) {
+      filteredEntrys = filteredEntrys.filter((entry) => {
+        return originFilters.some((filter) => filter.value === entry.origin);
+      });
+    }
 
     // Sort
     const sortOption = sortOptions.find((option) => option.current);
@@ -159,13 +187,82 @@ const SearchFilterSortComponent = (props: Props) => {
 
       props.setFilteredEntrys(filteredEntrys);
     }
-  }, [search, sortOptions, sortOrders]);
+  }, [props.entrys, search, filters, sortOptions, sortOrders]);
   
+  // Update filters if new data has been fetched
+  useEffect(() => {
+    const newFilters : Filters = {
+      category: [],
+      location: [],
+      price: [],
+      origin: [],
+    };
+    props.entrys.forEach((entry) => {
+      const entryCategory = getEntryCategory(entry);
+      const categoryFilter = newFilters.category.find((filter) => filter.value === entryCategory.name);
+      if (!categoryFilter) {
+        newFilters.category.push({
+          value: entryCategory.name,
+          label: entryCategory.name || 'Okänd kategori',
+          checked: false,
+        });
+      }
+      const locationFilter = newFilters.location.find((filter) => filter.value === entry.location);
+      if (!locationFilter) {
+        newFilters.location.push({
+          value: entry.location,
+          label: entry.location || 'Okänd plats',
+          checked: false,
+        });
+      }
+      const priceFilter = newFilters.price.find((filter) => filter.value === entry.price.toString());
+      if (!priceFilter) {
+        newFilters.price.push({
+          value: entry.price.toString(),
+          label: entry.price.toString(),
+          checked: false,
+        });
+      }
+      const originFilter = newFilters.origin.find((filter) => filter.value === entry.origin);
+      if (!originFilter) {
+        newFilters.origin.push({
+          value: entry.origin,
+          label: entry.origin || 'Okänt ursprung',
+          checked: false,
+        });
+      }
+    });
+
+    // Sort the filters, but make sure empty values are first
+    newFilters.category.sort((a, b) => {
+      if (a.value === '') return -1;
+      if (b.value === '') return 1;
+      return a.value.localeCompare(b.value);
+    });
+    newFilters.location.sort((a, b) => {
+      if (a.value === '') return -1;
+      if (b.value === '') return 1;
+      return a.value.localeCompare(b.value);
+    });
+    newFilters.price.sort((a, b) => {
+      if (a.value === '') return -1;
+      if (b.value === '') return 1;
+      return parseInt(a.label) - parseInt(b.label);
+    });
+    newFilters.origin.sort((a, b) => {
+      if (a.value === '') return -1;
+      if (b.value === '') return 1;
+      return a.value.localeCompare(b.value);
+    });
+
+    setFilters(newFilters);
+  }, [props.entrys]);
+
   return (
     <div className="mt-12 mb-10">
       {/* Search */}
       <div className="flex flex-1 items-center justify-center px-2 mb-4">
-        <div className="w-full max-w-lg lg:max-w-xs">
+        <div className="w-full max-w-lg sm:max-w-xs">
           <label htmlFor="search" className="sr-only">
             Search
           </label>
@@ -207,7 +304,38 @@ const SearchFilterSortComponent = (props: Props) => {
               </Disclosure.Button>
             </div>
             <div className="pl-6">
-              <button type="button" className="text-gray-500 dark:text-gray-400">
+              <button 
+                type="button" 
+                className="text-gray-500 dark:text-gray-400"
+                onClick={() => {
+                  setFilters({
+                    category: filters.category.map((filter) => {
+                      return {
+                        ...filter,
+                        checked: false,
+                      }
+                    }),
+                    location: filters.location.map((filter) => {
+                      return {
+                        ...filter,
+                        checked: false,
+                      }
+                    }),
+                    price: filters.price.map((filter) => {
+                      return {
+                        ...filter,
+                        checked: false,
+                      }
+                    }),
+                    origin: filters.origin.map((filter) => {
+                      return {
+                        ...filter,
+                        checked: false,
+                      }
+                    }),
+                  });
+                }}
+              >
                 Rensa filter
               </button>
             </div>
@@ -228,6 +356,20 @@ const SearchFilterSortComponent = (props: Props) => {
                         type="checkbox"
                         className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         defaultChecked={option.checked}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            category: filters.category.map((filter) => {
+                              if (filter.value === option.value) {
+                                return {
+                                  ...filter,
+                                  checked: !filter.checked,
+                                }
+                              }
+                              return filter;
+                            }),
+                          });
+                        }}
                       />
                       <label htmlFor={`category-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600 dark:text-gray-200">
                         {option.label}
@@ -248,6 +390,20 @@ const SearchFilterSortComponent = (props: Props) => {
                         type="checkbox"
                         className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         defaultChecked={option.checked}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            location: filters.location.map((filter) => {
+                              if (filter.value === option.value) {
+                                return {
+                                  ...filter,
+                                  checked: !filter.checked,
+                                }
+                              }
+                              return filter;
+                            }),
+                          });
+                        }}
                       />
                       <label htmlFor={`location-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600 dark:text-gray-200">
                         {option.label}
@@ -270,9 +426,23 @@ const SearchFilterSortComponent = (props: Props) => {
                         type="checkbox"
                         className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         defaultChecked={option.checked}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            price: filters.price.map((filter) => {
+                              if (filter.value === option.value) {
+                                return {
+                                  ...filter,
+                                  checked: !filter.checked,
+                                }
+                              }
+                              return filter;
+                            }),
+                          });
+                        }}
                       />
                       <label htmlFor={`price-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600 dark:text-gray-200">
-                        {option.label}
+                        {formatCurrencySEK(parseInt(option.label))}
                       </label>
                     </div>
                   ))}
@@ -290,6 +460,20 @@ const SearchFilterSortComponent = (props: Props) => {
                         type="checkbox"
                         className="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         defaultChecked={option.checked}
+                        onClick={() => {
+                          setFilters({
+                            ...filters,
+                            origin: filters.origin.map((filter) => {
+                              if (filter.value === option.value) {
+                                return {
+                                  ...filter,
+                                  checked: !filter.checked,
+                                }
+                              }
+                              return filter;
+                            }),
+                          });
+                        }}
                       />
                       <label htmlFor={`origin-${optionIdx}`} className="ml-3 min-w-0 flex-1 text-gray-600 dark:text-gray-200">
                         {option.label}
