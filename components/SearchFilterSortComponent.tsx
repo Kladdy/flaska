@@ -7,6 +7,8 @@ import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/20/solid'
 import { classNames } from "@/utils/tools";
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { formatCurrencySEK } from "@/utils/format";
+import { StorageKeys, getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface Props {
   entrys: IEntry[];
@@ -27,38 +29,6 @@ interface Filters {
   origin: Filter[];
 }
 
-// const filters : Filters = {
-//   category: [
-//     { value: '0', label: '$0 - $25', checked: false },
-//     { value: '25', label: '$25 - $50', checked: false },
-//     { value: '50', label: '$50 - $75', checked: false },
-//     { value: '75', label: '$75+', checked: false },
-//   ],
-//   location: [
-//     { value: 'white', label: 'White', checked: false },
-//     { value: 'beige', label: 'Beige', checked: false },
-//     { value: 'blue', label: 'Blue', checked: true },
-//     { value: 'brown', label: 'Brown', checked: false },
-//     { value: 'green', label: 'Green', checked: false },
-//     { value: 'purple', label: 'Purple', checked: false },
-//   ],
-//   price: [
-//     { value: 'xs', label: 'XS', checked: false },
-//     { value: 's', label: 'S', checked: true },
-//     { value: 'm', label: 'M', checked: false },
-//     { value: 'l', label: 'L', checked: false },
-//     { value: 'xl', label: 'XL', checked: false },
-//     { value: '2xl', label: '2XL', checked: false },
-//   ],
-//   origin: [
-//     { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
-//     { value: 'tees', label: 'Tees', checked: false },
-//     { value: 'objects', label: 'Objects', checked: false },
-//     { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
-//     { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
-//   ],
-// }
-
 interface SortOption {
   value: string;
   label: string;
@@ -72,6 +42,7 @@ interface SortOrder {
 }
 
 const SearchFilterSortComponent = (props: Props) => {
+  const { user } = useUser();
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Filters>({
     category: [],
@@ -189,7 +160,7 @@ const SearchFilterSortComponent = (props: Props) => {
     }
   }, [props.entrys, search, filters, sortOptions, sortOrders]);
   
-  // Update filters if new data has been fetched
+  // Update filters if new data has been fetched. Also, fetch cached settings
   useEffect(() => {
     const newFilters : Filters = {
       category: [],
@@ -256,6 +227,41 @@ const SearchFilterSortComponent = (props: Props) => {
     });
 
     setFilters(newFilters);
+
+    const cachedSearch = getLocalStorage(StorageKeys.SEARCH, user!)
+    if (cachedSearch) setSearch(cachedSearch);
+
+    const cachedSortBy = getLocalStorage(StorageKeys.SORT_BY, user!)
+    if (cachedSortBy) {
+      setSortOptions(sortOptions.map((sortOption) => {
+        if (sortOption.value === cachedSortBy) {
+          return {
+            ...sortOption,
+            current: true,
+          }
+        }
+        return {
+          ...sortOption,
+          current: false,
+        }
+      }));
+    }
+    const cachedSortDirecton = getLocalStorage(StorageKeys.SORT_DIRECTION, user!)
+    if (cachedSortDirecton) {
+      setSortOrders(sortOrders.map((sortOrder) => {
+        if (sortOrder.value === cachedSortDirecton) {
+          return {
+            ...sortOrder,
+            current: true,
+          }
+        }
+        return {
+          ...sortOrder,
+          current: false,
+        }
+      }));
+    }
+
   }, [props.entrys]);
 
   return (
@@ -277,7 +283,10 @@ const SearchFilterSortComponent = (props: Props) => {
               placeholder="Search"
               type="search"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setLocalStorage(StorageKeys.SEARCH, e.target.value, user!)
+              }}
             />
           </div>
         </div>
@@ -525,6 +534,7 @@ const SearchFilterSortComponent = (props: Props) => {
                             onClick={() => {
                               setSortOptions(sortOptions.map((sortOption) => {
                                 if (sortOption.value === option.value) {
+                                  setLocalStorage(StorageKeys.SORT_BY, option.value, user!)
                                   return {
                                     ...sortOption,
                                     current: true,
@@ -581,6 +591,7 @@ const SearchFilterSortComponent = (props: Props) => {
                             onClick={() => {
                               setSortOrders(sortOrders.map((sortOrder) => {
                                 if (sortOrder.value === option.value) {
+                                  setLocalStorage(StorageKeys.SORT_DIRECTION, option.value, user!)
                                   return {
                                     ...sortOrder,
                                     current: true,
