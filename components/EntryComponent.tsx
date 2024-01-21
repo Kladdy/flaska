@@ -129,7 +129,7 @@ const IndexComponent = (props: Props) => {
                   <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">Detaljer om denna flaska</p>
                 </div>
                 <div className="px-4 py-6 sm:px-6">
-                  <div className="flex sm:flex-row gap-x-2 gap-y-2">
+                  <div className="flex flex-col sm:flex-row gap-x-2 gap-y-2">
                     <button
                       type="button"
                       className="inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
