@@ -87,6 +87,8 @@ const EntryGridList = (props: Props) => {
               {!!getSystembolagetLink(entry) && (
                 <div className="flex w-0 flex-1">
                   <a
+                    target="_blank" 
+                    rel="noopener noreferrer"
                     href={getSystembolagetLink(entry)}
                     className="hover:bg-gray-200 relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:hover:bg-gray-700"
                   >
@@ -98,6 +100,8 @@ const EntryGridList = (props: Props) => {
               {!!getVivinoLink(entry) && (
                 <div className="-ml-px flex w-0 flex-1">
                   <a
+                    target="_blank" 
+                    rel="noopener noreferrer"
                     href={getVivinoLink(entry)}
                     className="hover:bg-gray-200 relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:hover:bg-gray-700"
                   >

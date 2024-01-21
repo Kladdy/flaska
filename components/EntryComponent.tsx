@@ -203,6 +203,8 @@ const IndexComponent = (props: Props) => {
                     <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
                       {!!getSystembolagetLink(entry) && (
                         <a
+                          target="_blank" 
+                          rel="noopener noreferrer"
                           href={getSystembolagetLink(entry)}
                           className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
                         >
@@ -217,6 +219,8 @@ const IndexComponent = (props: Props) => {
                     <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-200 sm:col-span-2 sm:mt-0">
                       {!!getVivinoLink(entry) && (
                         <a
+                          target="_blank" 
+                          rel="noopener noreferrer"
                           href={getVivinoLink(entry)}
                           className="flex flex-row gap-x-1 rounded-md bg-white font-medium text-indigo-600 hover:text-indigo-500 dark:bg-slate-800 dark:text-indigo-500 dark:hover:text-indigo-400"
                         >
