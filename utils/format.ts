@@ -10,3 +10,4 @@ const currencyFormatterSEK = new Intl.NumberFormat('sv-SE', {
 export const formatCurrencySEK = (amount: number) => {
   return currencyFormatterSEK.format(amount);
 }
+ 
