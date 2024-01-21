@@ -5,10 +5,12 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/20/solid'
 import { classNames } from "@/utils/tools";
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 interface Props {
   entrys: IEntry[];
-  setEntrys: (entrys: IEntry[]) => void;
+  filteredEntrys: IEntry[];
+  setFilteredEntrys: (entrys: IEntry[]) => void;
 }
 
 interface Filter {
@@ -97,12 +99,25 @@ const SearchFilterSortComponent = (props: Props) => {
     return amount;
   }
 
-  // Update list on sort change
+  // Update list on search, filter or sort change
   useEffect(() => {
+    let filteredEntrys = [...props.entrys];
+
+    // Search
+    filteredEntrys = filteredEntrys.filter((entry) => {
+      return entry.name.toLowerCase().includes(search.toLowerCase()) ||
+        getEntryCategory(entry).name.toLowerCase().includes(search.toLowerCase()) ||
+        entry.location.toLowerCase().includes(search.toLowerCase()) ||
+        entry.origin.toLowerCase().includes(search.toLowerCase());
+    });
+
+    // Filter
+
+    // Sort
     const sortOption = sortOptions.find((option) => option.current);
     const sortOrder = sortOrders.find((order) => order.current);
     if (sortOption && sortOrder) {
-      const sortedEntrys = [...props.entrys].sort((a, b) => {
+      filteredEntrys = filteredEntrys.sort((a, b) => {
         if (sortOption.value === 'name') {
           if (sortOrder.value === 'ASC') {
             return a.name.localeCompare(b.name);
@@ -141,12 +156,36 @@ const SearchFilterSortComponent = (props: Props) => {
         }
         return 0;
       });
-      props.setEntrys(sortedEntrys);
+
+      props.setFilteredEntrys(filteredEntrys);
     }
-  }, [sortOptions, sortOrders]);
+  }, [search, sortOptions, sortOrders]);
   
   return (
-    <div className="mt-4 mb-10">
+    <div className="mt-12 mb-10">
+      {/* Search */}
+      <div className="flex flex-1 items-center justify-center px-2 mb-4">
+        <div className="w-full max-w-lg lg:max-w-xs">
+          <label htmlFor="search" className="sr-only">
+            Search
+          </label>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              id="search"
+              name="search"
+              className="block w-full rounded-md border-0 bg-white dark:bg-gray-700 py-1.5 pl-10 pr-3 text-gray-900 dark:text-gray-300 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:bg-white dark:focus:text-gray-900 dark:focus:ring-gray-600 sm:text-sm sm:leading-6"
+              placeholder="Search"
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       <Disclosure
         as="section"

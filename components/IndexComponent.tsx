@@ -18,6 +18,7 @@ interface Props {
 
 const IndexComponent = (props: Props) => {
   const [entrys, setEntrys] = useState<IEntry[]>([]);
+  const [filteredEntrys, setFilteredEntrys] = useState<IEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEntryModal, setShowEntryModal] = useState(false);
   
@@ -39,6 +40,10 @@ const IndexComponent = (props: Props) => {
     setEntrys(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    setFilteredEntrys(entrys);
+  }, [entrys]);
 
   return (
     <>
@@ -66,8 +71,8 @@ const IndexComponent = (props: Props) => {
           </div>
         ) : (
           <div>
-            <SearchFilterSortComponent entrys={entrys} setEntrys={setEntrys} />
-            <EntryGridList entrys={entrys} />
+            <SearchFilterSortComponent entrys={entrys} filteredEntrys={filteredEntrys} setFilteredEntrys={setFilteredEntrys} />
+            <EntryGridList entrys={filteredEntrys} />
           </div>
         )}
 
