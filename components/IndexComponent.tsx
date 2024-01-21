@@ -10,6 +10,7 @@ import Link from "next/link";
 import TitleComponent from "./TitleComponent";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import LoadingDots from "./LoadingDots";
+import SearchFilterSortComponent from "./SearchFilterSortComponent";
 
 interface Props {
   user: UserProfile;
@@ -17,6 +18,7 @@ interface Props {
 
 const IndexComponent = (props: Props) => {
   const [entrys, setEntrys] = useState<IEntry[]>([]);
+  const [filteredEntrys, setFilteredEntrys] = useState<IEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEntryModal, setShowEntryModal] = useState(false);
   
@@ -38,6 +40,10 @@ const IndexComponent = (props: Props) => {
     setEntrys(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    setFilteredEntrys(entrys);
+  }, [entrys]);
 
   return (
     <>
@@ -64,7 +70,10 @@ const IndexComponent = (props: Props) => {
             <LoadingDots/>
           </div>
         ) : (
-          <EntryGridList entrys={entrys} />
+          <div>
+            <SearchFilterSortComponent entrys={entrys} filteredEntrys={filteredEntrys} setFilteredEntrys={setFilteredEntrys} />
+            <EntryGridList entrys={filteredEntrys} />
+          </div>
         )}
 
       </div>
